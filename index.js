@@ -29,7 +29,7 @@ app.get('/', function(req, res) {
    }
  * @link https://docs.api.ai/docs/webhook
  */
-app.post('/jeopardy', function(req, res) {
+app.get('/jeopardy', function(req, res) {
 	jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
 		res.send({
       speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
