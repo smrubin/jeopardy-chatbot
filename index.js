@@ -28,7 +28,7 @@ app.post('/jeopardy', function(req, res) {
   console.log('headers: ' + JSON.stringify(req.headers));
   console.log('body: ' + JSON.stringify(req.body));
 
-  jeopardyAPI[req.body.result.action](req.body.result).then(function(jeopardyInfoResp) {
+  jeopardyAPI[req.body.result.action](req.body).then(function(jeopardyInfoResp) {
 		res.send({
       speech: jeopardyInfoResp.message,
       displayText: jeopardyInfoResp.message,
