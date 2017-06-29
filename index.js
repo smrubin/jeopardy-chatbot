@@ -25,8 +25,10 @@ app.listen(PORT, function() {
  * @link https://docs.api.ai/docs/webhook
  */
 app.post('/jeopardy', function(req, res) {
-  console.log(req);
-	jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
+  console.log('headers: ' + JSON.stringify(request.headers));
+  console.log('body: ' + JSON.stringify(request.body));
+
+  jeopardyAPI[req.body.result.action]().then(function(jeopardyInfoResp) {
 		res.send({
       speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
       displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
@@ -36,4 +38,16 @@ app.post('/jeopardy', function(req, res) {
 		console.log(err);
 		res.sendStatus(500);
 	});
+
+
+	// jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
+	// 	res.send({
+  //     speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
+  //     displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
+  //     source: "jBot"
+  //   });
+	// }).catch(function(err) {
+	// 	console.log(err);
+	// 	res.sendStatus(500);
+	// });
 });
