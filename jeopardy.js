@@ -25,7 +25,10 @@ function checkAnswer(requestBody) {
 			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, what is ${correctAnswer}!`});
 		}
 	} else {
-		return Promise.resolve({message: `You clearly have not played Jeopardy before. Your answer must be in the format of a question. Go on...give it another try.`});
+		return Promise.resolve({
+			message: `You clearly have not played Jeopardy before. Your answer must be in the format of a question. Go on...give it another try.`,
+			context: [{'name':'QUESTION', 'lifespan':1, 'parameters':{'correctAnswer':correctAnswer}}] 
+		});
 	}
 }
 
@@ -39,7 +42,7 @@ function generateJeopardyQuestionText(data) {
 	return {
 		message: `The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
 					${jeopardyData.question}`,
-		context: [{'name':'QUESTION', 'lifespan':2, 'parameters':{'correctAnswer':jeopardyData.answer}}]
+		context: [{'name':'QUESTION', 'lifespan':1, 'parameters':{'correctAnswer':jeopardyData.answer}}]
 	};
 }
 

@@ -33,7 +33,7 @@ app.post('/jeopardy', function(req, res) {
       speech: jeopardyInfoResp.message,
       displayText: jeopardyInfoResp.message,
       source: "jBot",
-      contextOut: jeopardyInfoResp.context || []
+      contextOut: jeopardyInfoResp.context || req.body.result.contexts || []
     });
 	}).catch(function(err) {
 		console.log(err);
