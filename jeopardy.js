@@ -22,7 +22,7 @@ function checkAnswer(requestBody) {
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
 			return Promise.resolve({message: `Correct! You are clearly a genius.`});
 		} else {
-			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}....What is ${correctAnswer}!`});
+			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, what is ${correctAnswer}!`});
 		}
 	} else {
 		return Promise.resolve({message: `You clearly have not played Jeopardy before. Your answer must be in the format of a question. Go on...give it another try.`});
