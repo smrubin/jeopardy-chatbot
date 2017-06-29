@@ -22,7 +22,7 @@ function checkAnswer(requestBody) {
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
 			return Promise.resolve({message: `Correct! You are clearly a genius.`, context:[]});
 		} else {
-			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, what is ${correctAnswer}!`, context: []});
+			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, ${correctAnswer}!`, context: []});
 		}
 	} else {
 		return Promise.resolve({
