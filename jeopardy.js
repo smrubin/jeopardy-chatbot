@@ -6,7 +6,7 @@ const request = require('request-promise-native');
  */
 function getRandomQuestion() {
 	let jservice_url = 'http://jservice.io/api/' + 'random';
-	return request(jservice_url);
+	return request(jservice_url).then(jServiceResp => generateJeopardyQuestionText(jServiceResp));
 }
 
 /**
@@ -14,24 +14,29 @@ function getRandomQuestion() {
  * @param  {Object} chatBotParams - The `req.body.result.parameters` value from the Chatbot Fulfillment Request
  * @return {String}
  */
-// function getLocationParams(chatBotParams) {
-// 	var cityParam = chatBotParams['geo-city'] || 'Rosslyn';
-// 	var stateParam = chatBotParams['geo-state-us'] || 'VA';
-// 	return cityParam.replace(' ', '_') + "_" + stateParam.replace(' ', '_');
-// }
+function checkAnswer(requestBody) {
+	let userSaid = requestBody.resolvedQuery;
+	let answer = requestBody.parameters.answer;
+	if(userSaid.toLowerCase().indexOf('what is') > -1 || userSaid.toLowerCase().indexOf('who is') > -1) {
+		return Promise.resolve(`Your answer was ${answerParam}.`);
+	} else {
+		return Promise.resolve(`You clearly have not played Jeopardy before. Your answer must be in the format of a question.`);
+	}
+}
 
 /**
  * Generate the message that the chatbot will respond with
  * @param  {[type]} jeopardyResp - Response object from the JService API
  * @return {String}
  */
-function generateJeopardyResponseText(jeopardyResp) {
-	let jeopardyInfo = JSON.parse(jeopardyResp)[0]; // only grab first question from array
-	return `The Category is ${jeopardyInfo.category.title}, for ${jeopardyInfo.value} points:  
-					${jeopardyInfo.question}`
+function generateJeopardyQuestionText(data) {
+	let jeopardyData = JSON.parse(data)[0]; // only grab first question from array
+	return `The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
+					${jeopardyData.question}`
 }
 
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
-	generateJeopardyResponseText: generateJeopardyResponseText
+	checkAnswer: checkAnswer,
+	generateJeopardyQuestionText: generateJeopardyQuestionText
 };
