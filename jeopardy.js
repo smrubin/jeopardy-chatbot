@@ -20,9 +20,9 @@ function checkAnswer(requestBody) {
 	let correctAnswer = requestBody.parameters.correctAnswer.toLowerCase();
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
-			return Promise.resolve({message: `Correct! You are clearly a genius.`});
+			return Promise.resolve({message: `Correct! You are clearly a genius.`, context:[]});
 		} else {
-			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, what is ${correctAnswer}!`});
+			return Promise.resolve({message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, what is ${correctAnswer}!`, context: []});
 		}
 	} else {
 		return Promise.resolve({
