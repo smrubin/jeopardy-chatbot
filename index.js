@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.listen(PORT, function() {
-	console.log('Fulfillment service is running on port: ', PORT);
+	console.log('Jeopardy fulfillment service is running on port: ', PORT);
 });
 
 /**
@@ -25,12 +25,11 @@ app.listen(PORT, function() {
  * @link https://docs.api.ai/docs/webhook
  */
 app.post('/jeopardy', function(req, res) {
+  console.log(req);
 	jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
 		res.send({
-      // speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
-      // displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
-      speech: req,
-      displayText: req,
+      speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
+      displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
       source: "jBot"
     });
 	}).catch(function(err) {
