@@ -11,13 +11,13 @@ function getRandomQuestion() {
 
 /**
  * Returns a string to be consumed by the Weather API service representing the geographic location parsed from the charbot
- * @param  {Object} chatBotParams - The `req.body.result.parameters` value from the Chatbot Fulfillment Request
- * @return {String}
+ * @param  {Object} requestBody - The `req.body.result` value from the Chatbot Fulfillment Request
+ * @return {Promise}
  */
 function checkAnswer(requestBody) {
 	let userSaid = requestBody.resolvedQuery;
 	let answer = requestBody.parameters.answer;
-	if(userSaid.toLowerCase().indexOf('what is') > -1 || userSaid.toLowerCase().indexOf('who is') > -1) {
+	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		return Promise.resolve(`Your answer was ${answer}.`);
 	} else {
 		return Promise.resolve(`You clearly have not played Jeopardy before. Your answer must be in the format of a question.`);
@@ -31,12 +31,14 @@ function checkAnswer(requestBody) {
  */
 function generateJeopardyQuestionText(data) {
 	let jeopardyData = JSON.parse(data)[0]; // only grab first question from array
-	return `The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
-					${jeopardyData.question}`
+	return {
+		message: `The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
+					${jeopardyData.question}`,
+		context: [{'name':'QUESTION', 'lifespan':2, 'parameters':{'correctAnswer':jeopardyData.answer}}]
+	};
 }
 
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
 	checkAnswer: checkAnswer,
-	generateJeopardyQuestionText: generateJeopardyQuestionText
 };

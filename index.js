@@ -30,24 +30,14 @@ app.post('/jeopardy', function(req, res) {
 
   jeopardyAPI[req.body.result.action](req.body.result).then(function(jeopardyInfoResp) {
 		res.send({
-      speech: jeopardyInfoResp,
-      displayText: jeopardyInfoResp,
-      source: "jBot"
+      speech: jeopardyInfoResp.message,
+      displayText: jeopardyInfoResp.message,
+      source: "jBot",
+      contextOut: jeopardyContextOut.context || ''
     });
 	}).catch(function(err) {
 		console.log(err);
 		res.sendStatus(500);
 	});
 
-
-	// jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
-	// 	res.send({
-  //     speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
-  //     displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
-  //     source: "jBot"
-  //   });
-	// }).catch(function(err) {
-	// 	console.log(err);
-	// 	res.sendStatus(500);
-	// });
 });
