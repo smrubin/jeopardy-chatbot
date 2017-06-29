@@ -18,7 +18,7 @@ function checkAnswer(requestBody) {
 	let userSaid = requestBody.resolvedQuery;
 	let answer = requestBody.parameters.answer;
 	if(userSaid.toLowerCase().indexOf('what is') > -1 || userSaid.toLowerCase().indexOf('who is') > -1) {
-		return Promise.resolve(`Your answer was ${answerParam}.`);
+		return Promise.resolve(`Your answer was ${answer}.`);
 	} else {
 		return Promise.resolve(`You clearly have not played Jeopardy before. Your answer must be in the format of a question.`);
 	}
