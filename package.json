@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A jeopardy fulfillment services for API.ai",
   "main": "index.js",
-  "author": "",
+  "author": "smrubin",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.1",

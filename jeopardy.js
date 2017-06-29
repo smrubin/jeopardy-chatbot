@@ -31,7 +31,6 @@ function generateJeopardyResponseText(jeopardyResp) {
 }
 
 module.exports = {
-	getCityWeather: getCityWeather,
-	getLocationParams: getLocationParams,
+	getRandomQuestion: getRandomQuestion,
 	generateJeopardyResponseText: generateJeopardyResponseText
 };

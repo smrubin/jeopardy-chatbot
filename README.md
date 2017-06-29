@@ -15,7 +15,3 @@ npm install
 ## Software Used
 * [Express](https://expressjs.com) - Web Application Framework
 * [Request](https://github.com/request/request) - Simplified HTTP request client.
-
-## Configuration
-This application requires one environmental variable to be set
-* `WUNDERGROUND_API` - The API Key for interfacing with Wunderground.
