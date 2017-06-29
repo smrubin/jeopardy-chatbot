@@ -29,7 +29,7 @@ app.post('/jeopardy', function(req, res) {
 		res.send({
       speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
       displayText: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
-      source: "jService"
+      source: "jBot"
     });
 	}).catch(function(err) {
 		console.log(err);

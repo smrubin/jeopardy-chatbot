@@ -26,8 +26,9 @@ function getRandomQuestion() {
  * @return {String}
  */
 function generateJeopardyResponseText(jeopardyResp) {
-	let jeopardyInfo = JSON.parse(jeopardyResp);
-	return jeopardyInfo[0].question;
+	let jeopardyInfo = JSON.parse(jeopardyResp)[0]; // only grab first question from array
+	return `The Category is ${jeopardyInfo.category.title}, for ${jeopardyInfo.value} points:  
+					${jeopardyInfo.question}`
 }
 
 module.exports = {
