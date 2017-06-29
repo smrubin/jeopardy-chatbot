@@ -27,7 +27,7 @@ function getRandomQuestion() {
  */
 function generateJeopardyResponseText(jeopardyResp) {
 	let jeopardyInfo = JSON.parse(jeopardyResp);
-	return jeopardyInfo.question;
+	return jeopardyInfo[0].question;
 }
 
 module.exports = {

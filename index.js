@@ -10,11 +10,6 @@ app.use(bodyParser.json());
 
 app.listen(PORT, function() {
 	console.log('Fulfillment service is running on port: ', PORT);
-})
-
-
-app.get('/', function(req, res) {
-  res.send('Welcome to the Jeopardy Chatbot');
 });
 
 /**
