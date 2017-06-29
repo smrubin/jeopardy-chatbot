@@ -13,6 +13,10 @@ app.listen(PORT, function() {
 })
 
 
+app.get('/', function(req, res) {
+  res.send('Welcome to the Jeopardy Chatbot');
+});
+
 /**
  * This POST Handler listens for the Webhook from the API.AI Fulfillment Request
  * Request body parameters from the language parsing can be found in `req.body.result.parameters`
@@ -25,7 +29,7 @@ app.listen(PORT, function() {
    }
  * @link https://docs.api.ai/docs/webhook
  */
-app.post('/', function(req, res) {
+app.post('/jeopardy', function(req, res) {
 	jeopardyAPI.getRandomQuestion().then(function(jeopardyInfoResp) {
 		res.send({
       speech: jeopardyAPI.generateJeopardyResponseText(jeopardyInfoResp),
