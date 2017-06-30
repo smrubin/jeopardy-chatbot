@@ -2,14 +2,21 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const request = require('request-promise-native');
-const jeopardyAPI = require('./jeopardy');
 const PORT = (process.env.PORT || 5000);
+
+const models = require('./models');
+const jeopardyAPI = require('./jeopardy');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.listen(PORT, function() {
 	console.log('Jeopardy fulfillment service is running on port: ', PORT);
+});
+
+// Connect to content pq database and define models
+models.sequelize.sync().then(function() {}, function(err) {
+  console.log('Error: ', err);
 });
 
 /**
@@ -39,5 +46,4 @@ app.post('/jeopardy', function(req, res) {
 		console.log(err);
 		res.sendStatus(500);
 	});
-
 });
