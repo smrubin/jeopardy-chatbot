@@ -99,4 +99,5 @@ function getTopUsers() {
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
 	checkAnswer: checkAnswer,
+	getTopUsers: getTopUsers
 };
