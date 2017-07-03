@@ -20,13 +20,13 @@ models.sequelize.sync().then(function() {}, function(err) {
 });
 
 /**
- * This POST Handler listens for the Webhook from the API.AI Fulfillment Request
+ * This POST Handler listens for the Webhook from the API.AI Fulfillment Request and handles the request by sending it to the matching action function.
  * @link https://docs.api.ai/docs/webhook
  */
 app.post('/jeopardy', function(req, res) {
   console.log('headers: ' + JSON.stringify(req.headers));
   console.log('body: ' + JSON.stringify(req.body));
-  
+
   let user = req.body.sessionId;
 
   jeopardyApi[req.body.result.action](user, req.body.result).then(function(jeopardyResp) {

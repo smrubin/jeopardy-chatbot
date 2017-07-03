@@ -1,9 +1,13 @@
 const request = require('request-promise-native');
+const AsciiTable = require('ascii-table');
 const userApi = require('./api/user/user.controller');
 
 /**
- * Create A URL query to get data from the Wunderground API
- * @return {Promise} - The HTTP Query to the Jeopardy API service
+ * Get a random Jeopardy question from the jService API
+ * Checks a user's answer against the previous question's correct answer. Update score in db if correct.
+ * @param user
+ * @param  {Object} reqResult - The `req.body.result` value from the Chatbot Fulfillment Request
+ * @return {Promise} Promise that resolves to the formatted output to return to api.ai
  */
 function getRandomQuestion(user, reqResult) {
 	let jservice_url = 'http://jservice.io/api/' + 'random';
@@ -13,9 +17,32 @@ function getRandomQuestion(user, reqResult) {
 
 
 /**
- * Checks a user's answer against the previous question's correct answer
- * @param  {Object} requestBody - The `req.body.result` value from the Chatbot Fulfillment Request
- * @return {Promise}
+ * Generate the message that the chatbot will respond with
+ * @param {String} user
+ * @param  {[Object]} rawData - Response object array from the JService API
+ * @return {Object} The formatted output to return to api.ai
+ */
+function generateJeopardyQuestionText(user, rawData) {
+	let jeopardyData = JSON.parse(rawData)[0]; // only grab first question from array
+	return {
+		message: `Alright ${user}!  The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
+		${jeopardyData.question}`,
+		context: [{
+			'name': 'QUESTION',
+			'lifespan': 1,
+			'parameters': {
+				'data': jeopardyData
+			}
+		}]
+	};
+}
+
+
+/**
+ * Checks a user's answer against the previous question's correct answer. Update score in db if correct.
+ * @param user
+ * @param  {Object} reqResult - The `req.body.result` value from the Chatbot Fulfillment Request
+ * @return {Promise} Promise that resolves to the formatted output to return to api.ai
  */
 function checkAnswer(user, reqResult) {
 	let userSaid = reqResult.resolvedQuery;
@@ -54,24 +81,19 @@ function checkAnswer(user, reqResult) {
 }
 
 
-/**
- * Generate the message that the chatbot will respond with
- * @param  {[type]} jeopardyResp - Response object from the JService API
- * @return {String}
- */
-function generateJeopardyQuestionText(user, rawData) {
-	let jeopardyData = JSON.parse(rawData)[0]; // only grab first question from array
-	return {
-		message: `Alright ${user}!  The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
-		${jeopardyData.question}`,
-		context: [{
-			'name': 'QUESTION',
-			'lifespan': 1,
-			'parameters': {
-				'data': jeopardyData
-			}
-		}]
-	};
+function getTopUsers() {
+	return userApi.getTopUsers(n).then(topUsers => {
+		let table = new AsciiTable();
+		table.setHeading('Rank', 'Username', 'Score');
+
+		topUsers.forEach((user, index) => {
+			table.addRow(index + 1, user.username, user.score);
+		});
+
+		return {
+			message: table.toString()
+		}
+	});
 }
 
 module.exports = {

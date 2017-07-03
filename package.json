@@ -6,6 +6,7 @@
   "author": "smrubin",
   "license": "ISC",
   "dependencies": {
+    "ascii-table": "0.0.9",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "pg": "^6.4.0",
