@@ -43,8 +43,10 @@ function updateUser(username, score) {
     where: {
       username: username
     },
-    returning: true
+    returning: true,
+    plain: true
   })
+  .then(result => result[1].dataValues);
 }
 
 module.exports = {
