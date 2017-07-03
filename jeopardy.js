@@ -21,7 +21,7 @@ function checkAnswer(user, reqResult) {
 	let userSaid = reqResult.resolvedQuery;
 	let answer = reqResult.parameters.answer.toLowerCase();
 	// let correctAnswer = reqResult.parameters.correctAnswer.toLowerCase();
-	let correctAnswer = reqResult.contexts[0].parameters['data.original'].answer;
+	let correctAnswer = reqResult.contexts[0].parameters['data'].answer;
 	
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
