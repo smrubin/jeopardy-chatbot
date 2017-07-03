@@ -23,13 +23,12 @@ function checkAnswer(user, reqResult) {
 	
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		let answer = reqResult.parameters.answer.toLowerCase();
-		let correctAnswer = jeopardyData.answer;
+		let correctAnswer = jeopardyData.answer.toLowerCase();
 		
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
 			let value = jeopardyData.value;
 			return userApi.getUser(user)
-				.then(userInfo => userInfo.score)
-				.then(currentScore => userApi.updateUser(user, currentScore + value))
+				.then(userInfo => userApi.updateUser(user, userInfo.score + value))
 				.then(userInfo => ({
 					message: `${userInfo.username}, you are correct! You are clearly a genius. Your total score is now ${userInfo.score}`,
 					context:[]
