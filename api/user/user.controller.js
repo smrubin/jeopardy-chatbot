@@ -4,12 +4,12 @@ var User = require('../../models').User;
 
 // Return the full list of users
 function getUsers() {
-  User.findAll();
+  return User.findAll();
 }
 
 // Return a user by username
 function getUser(username) {
-  User.find({
+  return User.find({
     where: {
       username: username
     }
@@ -17,12 +17,28 @@ function getUser(username) {
 }
 
 // Return the top players and scores
-function getTopScores() {
-  //todo
+function getTopUsers(n = 5) {
+  return User.findAll({
+    order: 'score DESC',
+    limit: n
+  })
+}
+
+
+function getOrCreateUser(username) {
+  return User.findOrCreate({
+    where: {
+      username: username
+    },
+    defaults: {
+      score: 0
+    }
+  });
 }
 
 module.exports = {
 	getUsers: getUsers,
 	getUser: getUser,
-  getTopScores: getTopScores
+  getTopScores: getTopScores,
+  getOrCreateUser: getOrCreateUser
 };

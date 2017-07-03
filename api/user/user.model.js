@@ -7,7 +7,10 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     username: DataTypes.STRING,
-    score: DataTypes.INTEGER
+    score: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    }
   });
 
   return User;

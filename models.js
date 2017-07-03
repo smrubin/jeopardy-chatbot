@@ -3,9 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 var db = {};
-// var sequelize = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql.options);
 
 fs.readdirSync(__dirname + '/api')
   .filter(function(file) {

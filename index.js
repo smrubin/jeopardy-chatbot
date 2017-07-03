@@ -5,7 +5,7 @@ const request = require('request-promise-native');
 const PORT = (process.env.PORT || 5000);
 
 const models = require('./models');
-const jeopardyAPI = require('./jeopardy');
+const jeopardyApi = require('./jeopardy');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -35,11 +35,11 @@ app.post('/jeopardy', function(req, res) {
   console.log('headers: ' + JSON.stringify(req.headers));
   console.log('body: ' + JSON.stringify(req.body));
 
-  jeopardyAPI[req.body.result.action](req.body).then(function(jeopardyInfoResp) {
+  jeopardyApi[req.body.result.action](req.body).then(function(jeopardyInfoResp) {
 		res.send({
       speech: jeopardyInfoResp.message,
       displayText: jeopardyInfoResp.message,
-      source: "jBot",
+      source: "AlexTrebot",
       contextOut: jeopardyInfoResp.context || req.body.result.contexts || []
     });
 	}).catch(function(err) {
