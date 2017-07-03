@@ -52,5 +52,6 @@ module.exports = {
 	getUsers: getUsers,
 	getUser: getUser,
   getTopUsers: getTopUsers,
-  getOrCreateUser: getOrCreateUser
+  getOrCreateUser: getOrCreateUser,
+  updateUser: updateUser
 };
