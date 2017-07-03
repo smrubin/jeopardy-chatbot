@@ -36,9 +36,9 @@ function getOrCreateUser(username) {
   });
 }
 
-function updateUser(username, points) {
+function updateUser(username, score) {
   return User.update({
-    score: points
+    score: score
   }, {
     where: {
       username: username

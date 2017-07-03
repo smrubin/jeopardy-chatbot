@@ -26,6 +26,7 @@ models.sequelize.sync().then(function() {}, function(err) {
 app.post('/jeopardy', function(req, res) {
   console.log('headers: ' + JSON.stringify(req.headers));
   console.log('body: ' + JSON.stringify(req.body));
+  
   let user = req.body.sessionId;
 
   jeopardyApi[req.body.result.action](user, req.body.result).then(function(jeopardyResp) {

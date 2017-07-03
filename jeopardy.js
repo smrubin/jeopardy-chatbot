@@ -19,18 +19,21 @@ function getRandomQuestion(user, reqResult) {
  */
 function checkAnswer(user, reqResult) {
 	let userSaid = reqResult.resolvedQuery;
-	let answer = reqResult.parameters.answer.toLowerCase();
-	// let correctAnswer = reqResult.parameters.correctAnswer.toLowerCase();
-	let correctAnswer = reqResult.contexts[0].parameters['data'].answer;
+	let jeopardyData = reqResult.contexts[0].parameters['data'];
 	
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
+		let answer = reqResult.parameters.answer.toLowerCase();
+		let correctAnswer = jeopardyData.answer;
+		
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
-			return userApi.getUser(user).then(userInfo => {
-				return {
+			let value = jeopardyData.value;
+			return userApi.getUser(user)
+				.then(userInfo => userInfo.score)
+				.then(currentScore => userApi.updateUser(user, currentScore + value))
+				.then(userInfo => ({
 					message: `${userInfo.username}, you are correct! You are clearly a genius. Your total score is now ${userInfo.score}`,
 					context:[]
-				};
-			});
+				}));
 		} else {
 			return Promise.resolve({
 				message: `Incorrect! The correct answer is ${correctAnswer}. Ah, yes, ${correctAnswer}!`,
@@ -44,7 +47,7 @@ function checkAnswer(user, reqResult) {
 				'name': 'QUESTION',
 				'lifespan': 1,
 				'parameters': {
-					'correctAnswer': correctAnswer
+					'data': jeopardyData
 				}
 			}] 
 		});
@@ -57,8 +60,8 @@ function checkAnswer(user, reqResult) {
  * @param  {[type]} jeopardyResp - Response object from the JService API
  * @return {String}
  */
-function generateJeopardyQuestionText(user, data) {
-	let jeopardyData = JSON.parse(data)[0]; // only grab first question from array
+function generateJeopardyQuestionText(user, rawData) {
+	let jeopardyData = JSON.parse(rawData)[0]; // only grab first question from array
 	return {
 		message: `Alright ${user}!  The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
 		${jeopardyData.question}`,
@@ -66,7 +69,6 @@ function generateJeopardyQuestionText(user, data) {
 			'name': 'QUESTION',
 			'lifespan': 1,
 			'parameters': {
-				'correctAnswer': jeopardyData.answer,
 				'data': jeopardyData
 			}
 		}]
