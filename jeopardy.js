@@ -67,7 +67,8 @@ function generateJeopardyQuestionText(user, data) {
 			'name': 'QUESTION',
 			'lifespan': 1,
 			'parameters': {
-				'correctAnswer': jeopardyData.answer
+				'correctAnswer': jeopardyData.answer,
+				'data': jeopardyData
 			}
 		}]
 	};
