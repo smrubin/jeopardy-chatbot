@@ -36,6 +36,18 @@ function getOrCreateUser(username) {
   });
 }
 
+function updateUser(username, points) {
+  return User.update({
+    score: points
+  }, {
+    where: {
+      username: username
+    },
+    returning: true,
+    plain: true
+  })
+}
+
 module.exports = {
 	getUsers: getUsers,
 	getUser: getUser,
