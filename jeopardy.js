@@ -30,7 +30,7 @@ function checkAnswer(user, reqResult) {
 			return userApi.getUser(user)
 				.then(userInfo => userApi.updateUser(user, userInfo.score + value))
 				.then(userInfo => ({
-					message: `${userInfo.username}, you are correct! You are clearly a genius. Your total score is now ${userInfo.score}`,
+					message: `${user}, you are correct! You are clearly a genius. Your total score is now ${userInfo.score}`,
 					context:[]
 				}));
 		} else {

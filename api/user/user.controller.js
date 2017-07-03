@@ -43,8 +43,7 @@ function updateUser(username, score) {
     where: {
       username: username
     },
-    returning: true,
-    plain: true
+    returning: true
   })
 }
 
