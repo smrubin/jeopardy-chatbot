@@ -5,11 +5,10 @@ const userApi = require('./api/user/user.controller');
  * Create A URL query to get data from the Wunderground API
  * @return {Promise} - The HTTP Query to the Jeopardy API service
  */
-function getRandomQuestion(requestBody) {
+function getRandomQuestion(user, reqResult) {
 	let jservice_url = 'http://jservice.io/api/' + 'random';
-	let user = requestBody.sessionId;
 	userApi.getOrCreateUser(user);
-	return request(jservice_url).then(jServiceResp => generateJeopardyQuestionText(requestBody.sessionId, jServiceResp));
+	return request(jservice_url).then(jServiceResp => generateJeopardyQuestionText(user, jServiceResp));
 }
 
 
@@ -18,11 +17,11 @@ function getRandomQuestion(requestBody) {
  * @param  {Object} requestBody - The `req.body.result` value from the Chatbot Fulfillment Request
  * @return {Promise}
  */
-function checkAnswer(requestBody) {
-	let userSaid = requestBody.result.resolvedQuery;
-	let answer = requestBody.result.parameters.answer.toLowerCase();
-	let correctAnswer = requestBody.result.parameters.correctAnswer.toLowerCase();
-	let user = requestBody.sessionId;
+function checkAnswer(user, reqResult) {
+	let userSaid = reqResult.resolvedQuery;
+	let answer = reqResult.parameters.answer.toLowerCase();
+	// let correctAnswer = reqResult.parameters.correctAnswer.toLowerCase();
+	let correctAnswer = reqResult.contexts[0].parameters['data.original'].answer;
 	
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {

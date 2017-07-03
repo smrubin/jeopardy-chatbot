@@ -21,14 +21,6 @@ models.sequelize.sync().then(function() {}, function(err) {
 
 /**
  * This POST Handler listens for the Webhook from the API.AI Fulfillment Request
- * Request body parameters from the language parsing can be found in `req.body.result.parameters`
- * Response must be JSON in the following format:
- * @example
- * {
-     speech: "",
-     displayText: "",
-     source: ""
-   }
  * @link https://docs.api.ai/docs/webhook
  */
 app.post('/jeopardy', function(req, res) {
@@ -36,17 +28,12 @@ app.post('/jeopardy', function(req, res) {
   console.log('body: ' + JSON.stringify(req.body));
   let user = req.body.sessionId;
 
-  jeopardyApi[req.body.result.action](req.body).then(function(jeopardyInfoResp) {
+  jeopardyApi[req.body.result.action](user, req.body.result).then(function(jeopardyResp) {
 		res.send({
-      speech: jeopardyInfoResp.message,
-      displayText: jeopardyInfoResp.message,
-      data: {
-        'currentScore': 400,
-        'user': 'srubin',
-        'question': jeopardyInfoResp
-      },
+      speech: jeopardyResp.message,
+      displayText: jeopardyResp.message,
       source: 'AlexTrebot',
-      contextOut: jeopardyInfoResp.context || req.body.result.contexts || []
+      contextOut: jeopardyResp.context || req.body.result.contexts || []
     });
 	}).catch(function(err) {
 		console.log(err);
