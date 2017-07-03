@@ -39,6 +39,6 @@ function getOrCreateUser(username) {
 module.exports = {
 	getUsers: getUsers,
 	getUser: getUser,
-  getTopScores: getTopScores,
+  getTopUsers: getTopUsers,
   getOrCreateUser: getOrCreateUser
 };
