@@ -12,6 +12,7 @@
     "pg": "^6.4.0",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.4",
+    "sanitize-html": "^1.14.1",
     "sequelize": "^4.2.1"
   }
 }

@@ -50,7 +50,8 @@ function updateUser(username, score) {
     },
     returning: true,
     plain: true
-  }) // The promise returns an array with one or two elements. The first element is always the number of affected rows, while the second element is the actual affected rows
+  })
+  // The promise returns an array with one or two elements. The first element is always the number of affected rows, while the second element is the actual affected rows
   .then(result => result[1].dataValues);
 }
 

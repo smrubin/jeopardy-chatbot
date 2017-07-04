@@ -1,5 +1,6 @@
 const request = require('request-promise-native');
 const AsciiTable = require('ascii-table');
+const SanitizeHtml = require('sanitize-html');
 const userApi = require('./api/user/user.controller');
 
 /**
@@ -12,18 +13,28 @@ const userApi = require('./api/user/user.controller');
 function getRandomQuestion(user, reqResult) {
 	let jservice_url = 'http://jservice.io/api/' + 'random';
 	userApi.getOrCreateUser(user);
-	return request(jservice_url).then(jServiceResp => generateJeopardyQuestionText(user, jServiceResp));
+	return request(jservice_url).then(jServiceResp => {
+		// Random returns array of 1, so grab first item
+		let jData = JSON.parse(jServiceResp)[0]; 
+		// Retry if no question exists or it has been flagged as invalid
+		if(!jData || jData.invalid_count) {
+			return getRandomQuestion(user, reqResult);
+		// If no value set, set it to 200
+		} else if(!jData.value) {
+			jData.value = 200;
+		}
+		return generateJeopardyQuestionText(user, jData);
+	});
 }
 
 
 /**
  * Generate the message that the chatbot will respond with
  * @param {String} user
- * @param  {[Object]} rawData - Response object array from the JService API
+ * @param  {[Object]} jeopardyData - Jeopardy question data from the JService API
  * @return {Object} The formatted output to return to api.ai
  */
-function generateJeopardyQuestionText(user, rawData) {
-	let jeopardyData = JSON.parse(rawData)[0]; // only grab first question from array
+function generateJeopardyQuestionText(user, jeopardyData) {
 	return {
 		message: `Alright ${user}!  The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
 		${jeopardyData.question}`,
@@ -48,11 +59,11 @@ function checkAnswer(user, reqResult) {
 	let userSaid = reqResult.resolvedQuery;
 	let jeopardyData = reqResult.contexts[0].parameters['data'];
 	
-	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
-		let answer = reqResult.parameters.answer.toLowerCase();
+	if(isInQuestionForm(userSaid)) {
+		let answer = reqResult.parameters.answer;
 		let correctAnswer = jeopardyData.answer;
-		
-		if(answer.indexOf(correctAnswer.toLowerCase()) > -1 || correctAnswer.toLowerCase().indexOf(answer) > -1) {
+
+		if(isGuessCorrect(answer, correctAnswer)) {
 			let value = jeopardyData.value;
 			return userApi.getUser(user)
 				.then(userInfo => userApi.updateUser(user, userInfo.score + value))
@@ -82,6 +93,40 @@ function checkAnswer(user, reqResult) {
 
 
 /**
+ * Checks if the user's guess matches the correct answer
+ * @param guess
+ * @param answer The correct answer
+ * @return {Boolean} Whether or not the user's guess matches the correct answer
+ */
+function isGuessCorrect(guess, answer) {
+	answer = SanitizeHtml(answer).trim().toLowerCase()
+		.replace(/\s+(&nbsp;|&)\s+/i, " and ")
+		.replace(/[^\w\s]/i, "")
+		.replace(/^(the|a|an) /i, "");
+	
+	guess = guess.trim().toLowerCase()
+		.replace(/\s+(&nbsp;|&)\s+/i, " and ")
+		.replace(/[^\w\s]/i, "")
+		.replace(/^(what|whats|where|wheres|who|whos) /i, "")
+		.replace(/^(is|are|was|were) /, "")
+		.replace(/^(the|a|an) /i, "")
+		.replace(/\?+$/, "");
+	
+	return guess.indexOf(answer) > -1 || answer.indexOf(guess) > -1;
+}
+
+
+/**
+ * Checks if the user's answer is in the form of a question
+ * @param userResp
+ * @return {Boolean} Whether or not the user's response was in question form
+ */
+function isInQuestionForm(userResp) {
+	return userResp.replace(/[^\w\s]/i, "").match(/^(what|whats|where|wheres|who|whos) /i)
+}
+
+
+/**
  * Gets the top users by score (5) and pretty prints into a table
  * @return {Promise} Promise that resolves to the formatted output of a leaderboard table to return to api.ai
  */
@@ -97,15 +142,28 @@ function getTopUsers() {
 		return {
 			message: table.toString()
 		}
-	});
-}
-
-
-function getMyScore(username) {
-	return userApi.getUser(username).then(user => ({
-		message: `Your score is ${user.score}. Well done!`
+	})
+	.catch(err => ({
+		message: `There are no scores posted yet.`
 	}));
 }
+
+
+/**
+ * Gets the current score for a particular user
+ * @param user
+ * @return {Promise} Promise that resolves to the formatted output to return to api.ai
+ */
+function getMyScore(username) {
+	return userApi.getUser(username)
+	.then(user => ({
+		message: `${username}, your score is ${user.score}. Well done!`
+	}))
+	.catch(err => ({
+		message: `You haven't played before ${username}, so you have 0 points.`
+	}));
+}
+
 
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
