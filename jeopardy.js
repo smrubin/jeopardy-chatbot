@@ -81,6 +81,10 @@ function checkAnswer(user, reqResult) {
 }
 
 
+/**
+ * Gets the top users by score (5) and pretty prints into a table
+ * @return {Promise} Promise that resolves to the formatted output of a leaderboard table to return to api.ai
+ */
 function getTopUsers() {
 	return userApi.getTopUsers().then(topUsers => {
 		let table = new AsciiTable();
@@ -96,8 +100,16 @@ function getTopUsers() {
 	});
 }
 
+
+function getMyScore(username) {
+	return userApi.getUser(username).then(user => ({
+		message: `Your score is ${user.score}. Well done!`
+	}));
+}
+
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
 	checkAnswer: checkAnswer,
-	getTopUsers: getTopUsers
+	getTopUsers: getTopUsers,
+	getMyScore: getMyScore
 };
