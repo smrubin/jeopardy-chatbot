@@ -50,9 +50,9 @@ function checkAnswer(user, reqResult) {
 	
 	if(userSaid.toLowerCase().indexOf('what') > -1 || userSaid.toLowerCase().indexOf('who') > -1) {
 		let answer = reqResult.parameters.answer.toLowerCase();
-		let correctAnswer = jeopardyData.answer.toLowerCase();
+		let correctAnswer = jeopardyData.answer;
 		
-		if(answer.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(answer) > -1) {
+		if(answer.indexOf(correctAnswer.toLowerCase()) > -1 || correctAnswer.toLowerCase().indexOf(answer) > -1) {
 			let value = jeopardyData.value;
 			return userApi.getUser(user)
 				.then(userInfo => userApi.updateUser(user, userInfo.score + value))

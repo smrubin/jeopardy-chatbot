@@ -21,7 +21,7 @@ function getUser(username) {
 // Return the top players and scores
 function getTopUsers() {
   return User.findAll({
-    order: 'score DESC',
+    order: [['score', 'DESC']],
     limit: 5
   })
 }
