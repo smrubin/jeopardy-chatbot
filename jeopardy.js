@@ -138,8 +138,8 @@ function getTopUsers() {
 		table
 			.setHeading('Rank', 'Username', 'Score')
 			.setBorder("", "=", ".", "'")
-			.setAlign(2, AsciiTable.RIGHT)
-			.setJustify();
+			.removeBorder()
+			.setAlign(2, AsciiTable.RIGHT);
 
 		topUsers.forEach((user, index) => {
 			table.addRow(index + 1, user.username, user.score);
