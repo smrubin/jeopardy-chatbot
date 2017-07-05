@@ -29,15 +29,15 @@ function getRandomQuestion(user, reqResult) {
 
 
 /**
- * Generate the message that the chatbot will respond with
+ * Generate the message that the chatbot will respond with. Uses Mattermost formatting: ** = bold, * = italics
  * @param {String} user
  * @param  {[Object]} jeopardyData - Jeopardy question data from the JService API
  * @return {Object} The formatted output to return to api.ai
  */
 function generateJeopardyQuestionText(user, jeopardyData) {
 	return {
-		message: `Alright ${user}!  The Category is ${jeopardyData.category.title}, for ${jeopardyData.value} points:  
-		${jeopardyData.question}`,
+		message: `Alright ${user}!  The Category is **${jeopardyData.category.title}**, for **${jeopardyData.value}** points:  
+		*${jeopardyData.question}*`,
 		context: [{
 			'name': 'QUESTION',
 			'lifespan': 1,
@@ -124,7 +124,7 @@ function isGuessCorrect(guess, correctAnswer) {
  * @return {Boolean} Whether or not the user's response was in question form
  */
 function isInQuestionForm(userResp) {
-	return userResp.replace(/[^\w\s]/i, "").match(/^(what|whats|where|wheres|who|whos) /i)
+	return userResp.replace(/[^\w\s]/i, "").match(/(what|whats|where|wheres|who|whos) /i);
 }
 
 
