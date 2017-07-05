@@ -143,7 +143,7 @@ function getTopUsers() {
 			table.addRow(index + 1, user.username, user.score);
 		});
 
-		let tableMsg = table.toString().replace(/\s/g, '  ');
+		let tableMsg = table.toString().replace(/ /g, '  ');
 
 		return {
 			message: tableMsg
