@@ -135,7 +135,9 @@ function isInQuestionForm(userResp) {
 function getTopUsers() {
 	return userApi.getTopUsers().then(topUsers => {
 		let table = new AsciiTable();
-		table.setHeading('Rank', 'Username', 'Score');
+		table
+			.setHeading('Rank', 'Username', 'Score')
+			.setBorder("|", "=", ".", "'");;
 
 		topUsers.forEach((user, index) => {
 			table.addRow(index + 1, user.username, user.score);
