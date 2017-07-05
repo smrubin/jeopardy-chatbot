@@ -64,6 +64,7 @@ function checkAnswer(user, reqResult) {
 		let correctAnswer = SanitizeHtml(jeopardyData.answer, {
 			allowedTags: []
 		}).replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
+			.replace(/[()]/g, '')
 			.replace(/[^\w\s]/i, "");
 
 		if(isGuessCorrect(guess, correctAnswer)) {
@@ -71,7 +72,7 @@ function checkAnswer(user, reqResult) {
 			return userApi.getUser(user)
 				.then(userInfo => userApi.updateUser(user, userInfo.score + value))
 				.then(userInfo => ({
-					message: `${user}, you are correct! Your total score is now ${userInfo.score}`,
+					message: `${user}, you are correct! Your total score is now ${userInfo.score}.`,
 					context:[]
 				}));
 		} else {
@@ -104,7 +105,7 @@ function checkAnswer(user, reqResult) {
 function isGuessCorrect(guess, correctAnswer) {
 	correctAnswer = correctAnswer.toLowerCase()
 		.replace(/^(the|a|an) /i, "");
-		
+
 	guess = guess.toLowerCase()
 		.replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
 		.replace(/[^\w\s]/i, "")
