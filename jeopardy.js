@@ -60,15 +60,20 @@ function checkAnswer(user, reqResult) {
 	let jeopardyData = reqResult.contexts[0].parameters['data'];
 	
 	if(isInQuestionForm(userSaid)) {
-		let answer = reqResult.parameters.answer;
-		let correctAnswer = jeopardyData.answer;
+		let guess = reqResult.parameters.answer;
+		let correctAnswer = SanitizeHtml(jeopardyData.answer, {
+			allowedTags: []
+		}).trim().toLowerCase()
+			.replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
+			.replace(/[^\w\s]/i, "")
+			.replace(/^(the|a|an) /i, "");
 
-		if(isGuessCorrect(answer, correctAnswer)) {
+		if(isGuessCorrect(guess, correctAnswer)) {
 			let value = jeopardyData.value;
 			return userApi.getUser(user)
 				.then(userInfo => userApi.updateUser(user, userInfo.score + value))
 				.then(userInfo => ({
-					message: `${user}, you are correct! You are clearly a genius. Your total score is now ${userInfo.score}`,
+					message: `${user}, you are correct! Your total score is now ${userInfo.score}`,
 					context:[]
 				}));
 		} else {
@@ -95,24 +100,19 @@ function checkAnswer(user, reqResult) {
 /**
  * Checks if the user's guess matches the correct answer
  * @param guess
- * @param answer The correct answer
+ * @param correctAnswer The correct answer
  * @return {Boolean} Whether or not the user's guess matches the correct answer
  */
-function isGuessCorrect(guess, answer) {
-	answer = SanitizeHtml(answer).trim().toLowerCase()
-		.replace(/\s+(&nbsp;|&)\s+/i, " and ")
-		.replace(/[^\w\s]/i, "")
-		.replace(/^(the|a|an) /i, "");
-	
+function isGuessCorrect(guess, correctAnswer) {
 	guess = guess.trim().toLowerCase()
-		.replace(/\s+(&nbsp;|&)\s+/i, " and ")
+		.replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
 		.replace(/[^\w\s]/i, "")
 		.replace(/^(what|whats|where|wheres|who|whos) /i, "")
 		.replace(/^(is|are|was|were) /, "")
 		.replace(/^(the|a|an) /i, "")
 		.replace(/\?+$/, "");
 	
-	return guess.indexOf(answer) > -1 || answer.indexOf(guess) > -1;
+	return guess.indexOf(correctAnswer) > -1 || correctAnswer.indexOf(guess) > -1;
 }
 
 
@@ -165,9 +165,22 @@ function getMyScore(username) {
 }
 
 
+/**
+ * Handles a user answering for another user out of turn
+ * @param username
+ * @return {Promise} Promise that resolves to the formatted output to return to api.ai
+ */
+function handleOutOfTurnAnswer(username) {
+	return Promise.resolve({
+		message: `Sorry ${username}, I didn't ask you a new question, so you can't answer. But feel free to ask me for a question if you'd like to test your knowledge.`
+	});
+}
+
+
 module.exports = {
 	getRandomQuestion: getRandomQuestion,
 	checkAnswer: checkAnswer,
 	getTopUsers: getTopUsers,
-	getMyScore: getMyScore
+	getMyScore: getMyScore,
+	handleOutOfTurnAnswer: handleOutOfTurnAnswer
 };
