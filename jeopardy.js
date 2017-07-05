@@ -137,7 +137,9 @@ function getTopUsers() {
 		let table = new AsciiTable();
 		table
 			.setHeading('Rank', 'Username', 'Score')
-			.setBorder("|", "=", ".", "'");;
+			.setBorder("", "=", ".", "'")
+			.setAlign(2, AsciiTable.RIGHT)
+			.setJustify();
 
 		topUsers.forEach((user, index) => {
 			table.addRow(index + 1, user.username, user.score);
