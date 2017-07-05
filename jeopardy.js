@@ -63,10 +63,8 @@ function checkAnswer(user, reqResult) {
 		let guess = reqResult.parameters.answer;
 		let correctAnswer = SanitizeHtml(jeopardyData.answer, {
 			allowedTags: []
-		}).trim().toLowerCase()
-			.replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
-			.replace(/[^\w\s]/i, "")
-			.replace(/^(the|a|an) /i, "");
+		}).replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
+			.replace(/[^\w\s]/i, "");
 
 		if(isGuessCorrect(guess, correctAnswer)) {
 			let value = jeopardyData.value;
@@ -104,7 +102,10 @@ function checkAnswer(user, reqResult) {
  * @return {Boolean} Whether or not the user's guess matches the correct answer
  */
 function isGuessCorrect(guess, correctAnswer) {
-	guess = guess.trim().toLowerCase()
+	correctAnswer = correctAnswer.toLowerCase()
+		.replace(/^(the|a|an) /i, "");
+		
+	guess = guess.toLowerCase()
 		.replace(/\s+(&nbsp;|&amp;|&)\s+/i, " and ")
 		.replace(/[^\w\s]/i, "")
 		.replace(/^(what|whats|where|wheres|who|whos) /i, "")
